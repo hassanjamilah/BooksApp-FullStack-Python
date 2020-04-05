@@ -3,10 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import jsonify
 import json
 db = SQLAlchemy()
-database_uri = 'postgres://postgres@localhost:5432/booksdb'
-def setup_db(app):
+database_path = 'postgres://postgres@localhost:5432/booksdb'
+def setup_db(app , database_path):
    
-    app.config['SQLALCHEMY_DATABASE_URI']=database_uri
+    app.config['SQLALCHEMY_DATABASE_URI']=database_path
     app.config['SQLALCHEMY_HANDLE_MODIFICATIONS']=False
     db.app = app 
     db.init_app(app)

@@ -2,6 +2,7 @@ from flask import Flask , request , abort , jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import sqlalchemy
 from booksapp.models import setup_db , Book
+import unittest
 
 books_per_page = 8 
 
@@ -15,7 +16,8 @@ def books_pagination(request , selection ):
 
 def create_app(test_config=None):
     app = Flask(__name__)
-    setup_db(app)
+    database_path = 'postgres://postgres@localhost:5432/booksdb'
+    setup_db(app , database_path)
     cors = CORS(app)
     
     @app.after_request
@@ -108,7 +110,7 @@ def create_app(test_config=None):
         return jsonify({
             "success":False , 
             "error":404 , 
-            "message":"Not Found"
+            "message":"Resource Not Found"
         }) , 404
     
     @app.errorhandler(422)
