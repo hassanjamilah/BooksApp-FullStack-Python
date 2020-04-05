@@ -1,5 +1,6 @@
 import os
 from flask_sqlalchemy import SQLAlchemy
+from flask import jsonify
 import json
 db = SQLAlchemy()
 database_uri = 'postgres://postgres@localhost:5432/booksdb'
@@ -18,3 +19,26 @@ class Book(db.Model):
     author = db.Column(db.String)
     rating = db.Column(db.Integer)
     
+    def __init__(self,title , author , rating):
+        self.title = title 
+        self.author = author 
+        self.rating = rating
+
+    def format(self):
+        return {
+            "id":self.id , 
+            "title":self.title , 
+            "author":self.author , 
+            "rating":self.rating
+        }       
+    
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+        
+    def update(self):
+        db.session.commit()
+        
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
