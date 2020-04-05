@@ -21,7 +21,7 @@ def create_app(test_config=None):
     @app.after_request
     def after_request(response):
         response.headers.add("Access-Control-Allow-Headers","Content-Type,Authorization,True")
-        response.headers.add("Access-Control-Allow-Methods" , "GET,POST,PATCH,DELETE,OPTIONS")
+        #response.headers.add("Access-Control-Allow-Methods" , "GET,POST,PATCH,DELETE,OPTIONS")
         return response
     
     @app.route('/books')
@@ -63,13 +63,44 @@ def create_app(test_config=None):
             if book is None:
                 abort(404)
             book.delete()
+            
+            selection = Book.query.order_by(Book.id).all()
+            current_selection  = books_pagination(request , selection)
+            
             return jsonify({
-                "success":True
+                "success":True , 
+                "deleted_book":book.id , 
+                "books":current_selection , 
+                "total_books":len(selection)
             })
         except:
-            abort(400)        
+            abort(422)        
             
     
+      
+
+    
+    @app.route('/books' , methods=['POST'])
+    def post_book():
+        
+        body = request.get_json()
+        title = body.get('title' , None)
+        rating = int(body.get('rating' ,'1'))
+        author = body.get('author')
+        try:
+            book = Book(title , author , rating)
+            book.insert()
+            selection = Book.query.order_by(Book.id).all()
+            current_books = books_pagination(request , selection)
+            return jsonify({
+                "success":True , 
+                "created":book.id , 
+                "books":current_books,
+                "total_books":len(selection)
+            })
+            return jsonify({"success":True})
+        except:
+            abort(422)
     
     
     

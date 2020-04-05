@@ -19,6 +19,11 @@ class Book(db.Model):
     author = db.Column(db.String)
     rating = db.Column(db.Integer)
     
+    def __init__(self):
+        self.title = None
+        self.author = None
+        self.rating = 1 
+        
     def __init__(self,title , author , rating):
         self.title = title 
         self.author = author 
